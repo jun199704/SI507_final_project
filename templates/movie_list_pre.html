@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>
+            movie_list_pre
+        </title>
+    </head>
+    <body>
+        <h1>Movie List</h1>
+       <ul>
+           {% for r in results %}
+           <li><a href ='/movie_detail/{{r[1]}}'>{{r[0]}}:{{r[1]}} ({{r[2]}}) Director: {{r[3]}} Casts: {{r[4]}}</a></li>
+           {% endfor %}
+       </ul> 
+       <p><a href='/'>Back to Main Menu</a></p>
+    </body>
+</html>

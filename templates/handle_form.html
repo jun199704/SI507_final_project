@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>
+            handle_form
+        </title>
+    </head>
+    <body>
+        <h1>Searching Result</h1>
+        {% if results ==[]%}
+        <p>No search result</p>
+        {% else %}
+        <ul>
+           {% for r in results %}
+           <li><a href ='/movie_detail/{{r[1]}}'>{{r[0]}} {{r[1]}} by {{r[4]}}</a></li>
+           {% endfor %}
+        </ul> 
+        {% endif %}
+        <p><a href='/'>Back to Main Menu</a></p>
+    </body>
+</html>
