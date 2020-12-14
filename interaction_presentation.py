@@ -72,7 +72,19 @@ def movie_count():
     ON Movies.Rank=Movie_Genre.Movie_id
     INNER JOIN Genres
     ON Movie_Genre.Genre_Id=Genres.Id
-    GROUP BY Genres.Id'''
+    GROUP BY Genres.Id
+    ORDER BY COUNT(*) DESC'''
+    result=cursor.execute(query).fetchall()
+    connection.close()
+    return result
+
+def director_count():
+    connection = sqlite3.connect(DB_NAME)
+    cursor = connection.cursor()
+    query='''SELECT COUNT (*),Director
+    FROM Movies
+    GROUP BY Director
+    ORDER BY COUNT(*) DESC'''
     result=cursor.execute(query).fetchall()
     connection.close()
     return result
@@ -105,6 +117,7 @@ def get_movie_info(moviename):
     #print(movie.title+movie_runtime+'  '+movie_plot+' '+movie_language)
     return movie_runtime,movie_plot,movie_language
 
+
 @app.route('/')
 def main_page():
     return render_template('main_page.html')
@@ -128,7 +141,7 @@ def movie_detail(title):
 def movie_list_pre():
     connection=sqlite3.connect(DB_NAME)
     cursor=connection.cursor()
-    query='''SELECT Rank,Title,Director,ProduceYear,Casts
+    query='''SELECT Rank,Title,ProduceYear,Director,Casts
     FROM Movies'''
     r=cursor.execute(query).fetchall()
     connection.close()
@@ -144,13 +157,13 @@ def handle_form():
     moviename=n.upper()
     connection = sqlite3.connect(DB_NAME)
     cursor = connection.cursor()
-    r = cursor.execute("SELECT Rank,Title,Director,ProduceYear,Casts from Movies where Title LIKE '%"+moviename+"%'").fetchall()
+    r = cursor.execute("SELECT Rank,Title,ProduceYear,Director,Casts from Movies where Title LIKE '%"+moviename+"%'").fetchall()
     connection.close()
     return render_template('handle_form.html',results=r)
 
 @app.route('/plot')
 def plot():
-    results=movie_count() # eg. (76,'Drama')
+    results=movie_count()
     x_vals=[]
     y_vals=[]
     for r in results:
@@ -164,8 +177,21 @@ def plot():
     div=fig.to_html(full_html=False)
     return render_template('plot.html',plot_div=div)
 
-
-
+@app.route('/director_count')
+def plot_director():
+    results=director_count() # eg. (76,'Drama')
+    x_vals=[]
+    y_vals=[]
+    for r in results[0:10]:
+        x_vals.append(r[1])
+        y_vals.append(r[0])
+    bars_data=go.Bar(
+        x=x_vals,
+        y=y_vals
+    )
+    fig=go.Figure(data=bars_data)
+    div=fig.to_html(full_html=False)
+    return render_template('director.html',plot_div=div)
 
 if __name__ == '__main__':  
     app.run(debug=True)
