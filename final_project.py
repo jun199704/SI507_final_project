@@ -221,13 +221,17 @@ def get_movie_info(moviename):
         movie_runtime=result['Runtime']
         movie_plot=result['Plot']
         movie_language=result['Language']
+        movie_country=result['Country']
+        movie_awards=result['Awards']
 
     else:
         movie_runtime='None'
         movie_plot='None'
         movie_language='None'
+        movie_country='None'
+        movie_awards='None'
     #print(movie.title+movie_runtime+'  '+movie_plot+' '+movie_language)
-    return movie_runtime,movie_plot,movie_language
+    return movie_runtime,movie_plot,movie_language,movie_country,movie_awards
 
 def create_db():
     conn = sqlite3.connect(DB_NAME)
@@ -405,8 +409,8 @@ def response():
 
 @app.route('/movie_detail/<title>')
 def movie_detail(title):
-    runtime,plot,language=get_movie_info(title)
-    return render_template('movie_detail.html',movie_title=title,movie_runtime=runtime,movie_plot=plot,movie_language=language)
+    runtime,plot,language,country,awards=get_movie_info(title)
+    return render_template('movie_detail.html',movie_title=title,movie_runtime=runtime,movie_plot=plot,movie_language=language,movie_country=country,movie_awards=awards)
 
 @app.route('/movie_list_pre')
 def movie_list_pre():
